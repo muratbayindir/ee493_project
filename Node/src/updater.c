@@ -98,14 +98,16 @@ void update_task(void)
 
         int sock = socket(addr_family, SOCK_DGRAM, ip_protocol);
         if (sock < 0) {
-            // ESP_LOGE(DEVICE_TAG, "Unable to create socket: errno %d", errno);
+            ESP_LOGE(DEVICE_TAG, "Unable to create socket: errno %d", errno);
             break;
         }
-        // ESP_LOGI(DEVICE_TAG, "Socket created, sending to %s:%d", SERVER_ADDRESS, SERVER_UPDATER_PORT);
+        ESP_LOGI(DEVICE_TAG, "Socket created, sending to %s:%d", SERVER_ADDRESS, SERVER_UPDATER_PORT);
 
         wifi_ap_record_t wifidata;
 
         while (1) {
+
+            payload = NULL;
             
             if (xSem_client_data != NULL)
             {
@@ -122,19 +124,19 @@ void update_task(void)
                 payload_len = strlen(payload);
                 int err = sendto(sock, payload, payload_len, 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
                 if (err < 0) {
-                    // ESP_LOGE(DEVICE_TAG, "Error occurred during sending: errno %d", errno);
+                    ESP_LOGE(DEVICE_TAG, "Error occurred during sending: errno %d", errno);
                     free(payload);
                     break;
                 }
-                // ESP_LOGI(DEVICE_TAG, "Message sent");
+                ESP_LOGI(DEVICE_TAG, "Message sent");
                 free(payload);
             }
 
-            vTaskDelay(2000 / portTICK_PERIOD_MS);
+            vTaskDelay(100 / portTICK_PERIOD_MS);
         }
 
         if (sock != -1) {
-            // ESP_LOGE(DEVICE_TAG, "Shutting down socket and restarting...");
+            ESP_LOGE(DEVICE_TAG, "Shutting down socket and restarting...");
             shutdown(sock, 0);
             close(sock);
         }
