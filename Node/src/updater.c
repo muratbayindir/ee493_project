@@ -4,26 +4,28 @@
 extern const char *device_id;
 
 update_data_t client_data;
+extern SemaphoreHandle_t xSem_client_data;
 
 char* build_payload()
 {
-    char *serializedStr;
+    char *serializedStr = NULL;
     cJSON *jsonRoot = NULL;
     cJSON *jsonDeviceId = NULL;
     cJSON *jsonTimeStamp = NULL;
     cJSON *jsonPayload = NULL;
     cJSON *jsonPayloadType = NULL;
+    cJSON *jsonRssiInfos = NULL;
     cJSON *jsonRssiInfo = NULL;
     cJSON *jsonRssiValue = NULL;
     cJSON *jsonRssiTargetDevice = NULL;
 
     jsonRoot = cJSON_CreateObject();
     if(jsonRoot == NULL)
-        return NULL;
+        goto END;
 
     jsonDeviceId = cJSON_CreateString(device_id);
     if (jsonDeviceId == NULL)
-        return NULL;
+        goto END;
 
     /* after creation was successful, immediately add it to the root,
      * thereby transferring ownership of the pointer to it */
@@ -31,38 +33,47 @@ char* build_payload()
 
     jsonTimeStamp = cJSON_CreateNumber(xTaskGetTickCount() * portTICK_PERIOD_MS);
     if (jsonTimeStamp == NULL)
-        return NULL;
+        goto END;
     cJSON_AddItemToObject(jsonRoot, "timestamp", jsonTimeStamp);
 
     jsonPayload = cJSON_CreateObject();
     if(jsonPayload == NULL)
-        return NULL;
+        goto END;
     cJSON_AddItemToObject(jsonRoot, "payload", jsonPayload);
 
     jsonPayloadType = cJSON_CreateString("rssi_info");
     if(jsonPayloadType == NULL)
-        return NULL;
+        goto END;
     cJSON_AddItemToObject(jsonPayload, "type", jsonPayloadType);
 
-    jsonRssiInfo = cJSON_CreateObject();
-    if(jsonRssiInfo == NULL)
-        return NULL;
-    cJSON_AddItemToObject(jsonPayload, "rssi_info", jsonRssiInfo);
+    jsonRssiInfos = cJSON_CreateArray();
+    if(jsonRssiInfos == NULL)
+        goto END;
+    cJSON_AddItemToObject(jsonPayload, "rssi_infos", jsonRssiInfos);
 
-    jsonRssiValue = cJSON_CreateNumber(client_data.rssi);
-    if(jsonRssiValue == NULL)
-        return NULL;
-    cJSON_AddItemToObject(jsonRssiInfo, "rssi_value", jsonRssiValue);
+    for (int i = 0; i < client_data.rssiInfosLen; i++)
+    {
+        jsonRssiInfo = cJSON_CreateObject();
+        if(jsonRssiInfo == NULL)
+            goto END;
+        cJSON_AddItemToArray(jsonRssiInfos, jsonRssiInfo);
 
-    jsonRssiTargetDevice = cJSON_CreateString("modem");
-    if(jsonRssiTargetDevice == NULL)
-        return NULL;
-    cJSON_AddItemToObject(jsonRssiInfo, "target_device", jsonRssiTargetDevice);
+        jsonRssiValue = cJSON_CreateNumber(client_data.rssiInfos[i].value);
+        if(jsonRssiValue == NULL)
+            goto END;
+        cJSON_AddItemToObject(jsonRssiInfo, "value", jsonRssiValue);
 
+        jsonRssiTargetDevice = cJSON_CreateString(client_data.rssiInfos[i].targetName);
+        if(jsonRssiTargetDevice == NULL)
+            goto END;
+        cJSON_AddItemToObject(jsonRssiInfo, "target_name", jsonRssiTargetDevice);
+    }
 
     serializedStr = cJSON_Print(jsonRoot);
     if (serializedStr == NULL)
         ESP_LOGE(DEVICE_TAG, "Failed to print json : errno %d", errno);
+
+END:
 
     cJSON_Delete(jsonRoot);
 
@@ -71,8 +82,7 @@ char* build_payload()
 
 void update_task(void) 
 {
-    // char payload[128];
-    char *payload;
+    char *payload = NULL;
     int payload_len;
     int addr_family = 0;
     int ip_protocol = 0;
@@ -88,33 +98,48 @@ void update_task(void)
 
         int sock = socket(addr_family, SOCK_DGRAM, ip_protocol);
         if (sock < 0) {
-            ESP_LOGE(DEVICE_TAG, "Unable to create socket: errno %d", errno);
+            // ESP_LOGE(DEVICE_TAG, "Unable to create socket: errno %d", errno);
             break;
         }
-        ESP_LOGI(DEVICE_TAG, "Socket created, sending to %s:%d", SERVER_ADDRESS, SERVER_UPDATER_PORT);
+        // ESP_LOGI(DEVICE_TAG, "Socket created, sending to %s:%d", SERVER_ADDRESS, SERVER_UPDATER_PORT);
+
+        wifi_ap_record_t wifidata;
 
         while (1) {
             
-            if((payload = build_payload()) != NULL)
+            if (xSem_client_data != NULL)
+            {
+                if (xSemaphoreTake(xSem_client_data, (TickType_t)10) == pdTRUE)
+                {
+                    payload = build_payload();
+
+                    xSemaphoreGive(xSem_client_data);
+                }
+            }
+
+            if(payload != NULL)
             {
                 payload_len = strlen(payload);
-                // payload_len = sprintf(payload, "{\"device_id\":\"%s\",\"rssi\":%d}", device_id, client_data.rssi);
                 int err = sendto(sock, payload, payload_len, 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
                 if (err < 0) {
-                    ESP_LOGE(DEVICE_TAG, "Error occurred during sending: errno %d", errno);
+                    // ESP_LOGE(DEVICE_TAG, "Error occurred during sending: errno %d", errno);
+                    free(payload);
                     break;
                 }
-                ESP_LOGI(DEVICE_TAG, "Message sent");
+                // ESP_LOGI(DEVICE_TAG, "Message sent");
+                free(payload);
             }
 
             vTaskDelay(2000 / portTICK_PERIOD_MS);
         }
 
         if (sock != -1) {
-            ESP_LOGE(DEVICE_TAG, "Shutting down socket and restarting...");
+            // ESP_LOGE(DEVICE_TAG, "Shutting down socket and restarting...");
             shutdown(sock, 0);
             close(sock);
         }
+
+        vTaskDelay(2000 / portTICK_PERIOD_MS);
     }
     vTaskDelete(NULL);
 }

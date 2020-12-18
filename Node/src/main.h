@@ -22,9 +22,18 @@
 #define WIFI_SSID "SUPERONLINE_WiFi_4766"
 #define WIFI_PASS "zbQ4eZJZAu4j"
 
+#define MAX_RSSI_INFO_LEN   30
+
+typedef struct rssi_info
+{
+    int value;
+    const char* targetName;
+}rssi_info_t;
+
 typedef struct update_data
 {
-    int rssi;
+    rssi_info_t rssiInfos[MAX_RSSI_INFO_LEN];
+    int rssiInfosLen;
 }update_data_t;
 
 void update_task(void);
