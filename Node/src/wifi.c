@@ -2,9 +2,12 @@
 
 extern update_data_t client_data;
 SemaphoreHandle_t xSem_client_data = NULL;
+bool dataReadyToBeSend = false;
+bool dataSent = false;
 
 // #define ENABLE_LONG_RANGE
 // #define ENABLE_SCAN
+// #define SHOW_SINGLE_AP
 
 /* Initialize Wi-Fi as sta and set scan method */
 void wifi_task(void)
@@ -58,12 +61,16 @@ void wifi_task(void)
             int i;
             for (i = 0; (i < MAX_RSSI_INFO_LEN) && (i < ap_count); i++)
             {
+#ifdef SHOW_SINGLE_AP
                 if (strcmp((const char *)ap_info[i].ssid, WIFI_SSID) == 0)
                 {
+#endif
                     ESP_LOGI(DEVICE_TAG, "SSID \t\t%s", ap_info[i].ssid);
                     ESP_LOGI(DEVICE_TAG, "RSSI \t\t%d", ap_info[i].rssi);
                     ESP_LOGI(DEVICE_TAG, "Channel \t\t%d\n", ap_info[i].primary);
+#ifdef SHOW_SINGLE_AP
                 }
+#endif
                 client_data.rssiInfos[i].value = ap_info[i].rssi;
                 client_data.rssiInfos[i].targetName = (char *)ap_info[i].ssid;
             }
@@ -89,7 +96,12 @@ void wifi_task(void)
 #endif
         ESP_ERROR_CHECK(esp_wifi_connect());
 #endif
+        dataReadyToBeSend = true;
+        dataSent = false;
 
-        vTaskDelay(100 / portTICK_PERIOD_MS);
+        while (dataSent == false)
+            vTaskDelay(25 / portTICK_PERIOD_MS);
+
+        vTaskDelay(50 / portTICK_PERIOD_MS);
     }
 }
