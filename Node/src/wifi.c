@@ -1,13 +1,15 @@
 #include "main.h"
 
+#define ENABLE_LONG_RANGE
+#define ENABLE_SCAN
+// #define SHOW_SINGLE_AP
+
 extern update_data_t client_data;
 SemaphoreHandle_t xSem_client_data = NULL;
 bool dataReadyToBeSend = false;
 bool dataSent = false;
-
-// #define ENABLE_LONG_RANGE
-// #define ENABLE_SCAN
-// #define SHOW_SINGLE_AP
+uint16_t number = MAX_RSSI_INFO_LEN;
+wifi_ap_record_t ap_info[MAX_RSSI_INFO_LEN];
 
 /* Initialize Wi-Fi as sta and set scan method */
 void wifi_task(void)
@@ -22,8 +24,6 @@ void wifi_task(void)
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_wifi_init(&cfg));
 
-    uint16_t number = MAX_RSSI_INFO_LEN;
-    wifi_ap_record_t ap_info[MAX_RSSI_INFO_LEN];
     uint16_t ap_count = 0;
     memset(ap_info, 0, sizeof(ap_info));
 

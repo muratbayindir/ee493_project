@@ -22,7 +22,7 @@
 #define WIFI_SSID "SUPERONLINE_WiFi_4766"
 #define WIFI_PASS "zbQ4eZJZAu4j"
 
-#define MAX_RSSI_INFO_LEN   10
+#define MAX_RSSI_INFO_LEN   30
 
 typedef struct rssi_info
 {
