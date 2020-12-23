@@ -1,5 +1,8 @@
 #include "main.h"
 #include "LocalizationService.h"
+#include "Localizer.h"
+
+using namespace rapidjson;
 
 LocalizationService::LocalizationService()
 {
@@ -17,11 +20,11 @@ LocalizationService::~LocalizationService()
 
 void LocalizationService::serviceThreadLoop()
 {
-	DWORD dwRead;
+	DWORD dwRead, dwWrite;
 	char buffer[1024];
-	HANDLE hPipe_;
+	HANDLE hPipe;
 
-	hPipe_ = CreateNamedPipe(TEXT("\\\\.\\pipe\\StronicsLocalizer"),
+	hPipe = CreateNamedPipe(TEXT("\\\\.\\pipe\\StronicsLocalizer"),
 		PIPE_ACCESS_DUPLEX,
 		PIPE_TYPE_BYTE | PIPE_READMODE_BYTE | PIPE_WAIT,   // FILE_FLAG_FIRST_PIPE_INSTANCE is not needed but forces CreateNamedPipe(..) to fail if the pipe already exists...
 		1,
@@ -30,26 +33,50 @@ void LocalizationService::serviceThreadLoop()
 		NMPWAIT_USE_DEFAULT_WAIT,
 		NULL);
 
-	while (!serviceThreadExit_ && hPipe_ != INVALID_HANDLE_VALUE)
+	while (!serviceThreadExit_ && hPipe != INVALID_HANDLE_VALUE)
 	{
-		if (ConnectNamedPipe(hPipe_, NULL) != FALSE)   // wait for someone to connect to the pipe
+		if (ConnectNamedPipe(hPipe, NULL) != FALSE)   // wait for someone to connect to the pipe
 		{
 			log << "Connected to a pipe\n";
 
 			uint32_t dataLen;
 
-			while (ReadFile(hPipe_, &dataLen, 4, &dwRead, NULL))
+			while (ReadFile(hPipe, &dataLen, 4, &dwRead, NULL))
 			{
-				if (dwRead == 4 && ReadFile(hPipe_, buffer, dataLen, &dwRead, NULL))
+				if (dwRead == 4 && ReadFile(hPipe, buffer, dataLen, &dwRead, NULL))
 				{
 					buffer[dwRead] = 0;
 					string message(buffer);
-					log << message << "\n";
+					log << "Received Message : " << message << "\n";
+
+					// {"name":"test", "targets":[{"name":"1","location":[1,2,3],"rssi":15},{}]}
+
+					Document doc;
+					doc.Parse(message.c_str());
+
+					Localizer localizer(doc["name"].GetString());
+
+					Value& targets = doc["targets"];
+					for (int i = 0; i < targets.GetArray().Size(); ++i)
+					{
+						Value& targetJson = targets[i];
+						Value& locationJson = targetJson["location"];
+						Target target(targetJson["name"].GetString(), Point(locationJson[0].GetDouble()
+							, locationJson[0].GetDouble(), locationJson[0].GetDouble()));
+						localizer.AddTarget(target);
+					}
+
+					localizer.UpdateLocation();
+					string response = "{\"location\":" + localizer.Location().GetObject() + "}";
+					uint32_t responseLength = response.length();
+
+					WriteFile(hPipe, &responseLength, 4, &dwWrite, NULL);
+					WriteFile(hPipe, response.c_str(), responseLength, &dwWrite, NULL);
 				}
 			}
 		}
 
 		log << "Disconnected from pipe\n";
-		DisconnectNamedPipe(hPipe_);
+		DisconnectNamedPipe(hPipe);
 	}
 }

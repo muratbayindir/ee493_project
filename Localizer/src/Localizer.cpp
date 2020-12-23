@@ -3,10 +3,6 @@
 
 using namespace std;
 
-Target::Target(string name, Point location) : name(name), location(location)
-{
-}
-
 void Localizer::AddTarget(Target target)
 {
 	targets.push_back(target);
@@ -15,7 +11,7 @@ void Localizer::AddTarget(Target target)
 void Localizer::AddTarget(string name, Point location)
 {
 	Target target(name, location);
-	targets.push_back(target);
+	this->AddTarget(target);
 }
 
 void Localizer::UpdateTargetRssi(string name, double rssiValue)
@@ -40,9 +36,4 @@ void Localizer::RemoveTarget(string name)
 
 void Localizer::UpdateLocation()
 {
-}
-
-Point Localizer::GetLocation()
-{
-	return location;
 }

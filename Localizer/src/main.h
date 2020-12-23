@@ -1,7 +1,8 @@
 #pragma once
 #include <iostream>
 #include <string>
-#include "Windows.h"
+#include <stdint.h>
+#include <Windows.h>
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
