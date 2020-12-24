@@ -1,3 +1,6 @@
 .pio/
 .vs/
 .vscode/
+obj/
+bin/
+packages/

@@ -35,15 +35,6 @@ namespace Controller
         {
             localizer.UpdateTarget(info);
 
-            //Target target = new Target();
-            //target.location = new List<double>();
-            //target.location.Add(0.0);
-            //target.location.Add(1.0);
-            //target.location.Add(2.0);
-            //target.name = info.targetName;
-            //target.rssi = info.rssiValue;
-            //localizer.UpdateTarget(target);
-
             //if(info.targetName == "SUPERONLINE_WiFi_4766")
             //{
             //}
