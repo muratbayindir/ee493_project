@@ -36,4 +36,34 @@ void Localizer::RemoveTarget(string name)
 
 void Localizer::UpdateLocation()
 {
+	/*
+x
+^
+.
+.
+ESP3
+.
+.
+.
+ESP1 . . . ESP2. . .>y
+*/
+	double z1;
+	double z2;
+	double z3;
+
+	for (auto it = begin(targets); it != end(targets); ++it) {
+		z1 = RSSI_to_Meter(it->Rssi);
+	}
+
+	z1 = z1 * z1;
+	z2 = z2 * z2;
+	z3 = z3 * z3;
+
+	location.x = (z1 - z2 + 9) / 6; //for 1 meter square area 6->2, 9->1
+	location.y = (z1 - z3 + 9) / 6; //for 1 meter square area 6->2, 9->1
+}
+
+double Localizer::RSSI_to_Meter(double rssi)
+{
+	return 0.0;
 }

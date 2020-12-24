@@ -38,7 +38,10 @@ private:
 	string name;
 	Point location;
 	vector<Target> targets;
+
+	double RSSI_to_Meter(double rssi);
 public:
+
 	Localizer(string name) : name(name) {}
 	void AddTarget(Target target);
 	void AddTarget(string name, Point location);

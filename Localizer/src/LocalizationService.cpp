@@ -39,14 +39,14 @@ void LocalizationService::serviceThreadLoop()
 		{
 			log << "Connected to a pipe\n";
 
-			uint32_t dataLen;
+			uint32_t dataLen = 0;
 
 			while (ReadFile(hPipe, &dataLen, 4, &dwRead, NULL))
 			{
 				if (dwRead == 4 && ReadFile(hPipe, buffer, dataLen, &dwRead, NULL))
 				{
 					buffer[dwRead] = 0;
-					string message(buffer);
+					string message((char *)buffer);
 					log << "Received Message : " << message << "\n";
 
 					// {"name":"test", "targets":[{"name":"1","location":[1,2,3],"rssi":15},{}]}
