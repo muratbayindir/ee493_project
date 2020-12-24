@@ -34,10 +34,7 @@ namespace Controller
         void onNodeUpdate(Node node, RSSIInfo info)
         {
             localizer.UpdateTarget(info);
-
-            //if(info.targetName == "SUPERONLINE_WiFi_4766")
-            //{
-            //}
+            
             string tipText = "Name : " + node.Name + "\n"
                 + "Rssi Value : " + info.rssiValue + "\n"
                 + "Rssi Target : " + info.targetName + "\n"

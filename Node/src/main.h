@@ -36,7 +36,7 @@ typedef struct update_data
     int rssiInfosLen;
 }update_data_t;
 
-void update_task(void);
 void wifi_task(void);
+char *build_payload();
 
 

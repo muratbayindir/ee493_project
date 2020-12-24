@@ -2,11 +2,7 @@
 #include <cJSON.h>
 
 extern const char *device_id;
-
 update_data_t client_data;
-extern SemaphoreHandle_t xSem_client_data;
-extern bool dataReadyToBeSend;
-extern bool dataSent;
 
 char *build_payload()
 {
@@ -80,79 +76,4 @@ END:
     cJSON_Delete(jsonRoot);
 
     return serializedStr;
-}
-
-void update_task(void)
-{
-    char *payload = NULL;
-    int payload_len;
-    int addr_family = 0;
-    int ip_protocol = 0;
-
-    while (1)
-    {
-        struct sockaddr_in dest_addr;
-        dest_addr.sin_addr.s_addr = inet_addr(SERVER_ADDRESS);
-        dest_addr.sin_family = AF_INET;
-        dest_addr.sin_port = htons(SERVER_UPDATER_PORT);
-        addr_family = AF_INET;
-        ip_protocol = IPPROTO_IP;
-
-        int sock = socket(addr_family, SOCK_DGRAM, ip_protocol);
-        if (sock < 0)
-        {
-            ESP_LOGE(DEVICE_TAG, "Unable to create socket: errno %d", errno);
-            break;
-        }
-        ESP_LOGI(DEVICE_TAG, "Socket created, sending to %s:%d", SERVER_ADDRESS, SERVER_UPDATER_PORT);
-
-        wifi_ap_record_t wifidata;
-
-        while (1)
-        {
-            payload = NULL;
-
-            while (dataReadyToBeSend == false)
-                vTaskDelay(25 / portTICK_PERIOD_MS);
-
-            if (xSem_client_data != NULL)
-            {
-                if (xSemaphoreTake(xSem_client_data, (TickType_t)10) == pdTRUE)
-                {
-                    payload = build_payload();
-
-                    xSemaphoreGive(xSem_client_data);
-                }
-            }
-
-            if (payload != NULL)
-            {
-                payload_len = strlen(payload);
-                int err = sendto(sock, payload, payload_len, 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
-                if (err < 0)
-                {
-                    ESP_LOGE(DEVICE_TAG, "Error occurred during sending: errno %d", errno);
-                }
-                else
-                {
-                    ESP_LOGI(DEVICE_TAG, "Message sent");
-                    dataSent = true;
-                    dataReadyToBeSend = false;
-                }
-                free(payload);
-            }
-
-            vTaskDelay(25 / portTICK_PERIOD_MS);
-        }
-
-        if (sock != -1)
-        {
-            ESP_LOGE(DEVICE_TAG, "Shutting down socket and restarting...");
-            shutdown(sock, 0);
-            close(sock);
-        }
-
-        vTaskDelay(100 / portTICK_PERIOD_MS);
-    }
-    vTaskDelete(NULL);
 }

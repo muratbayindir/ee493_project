@@ -14,22 +14,10 @@ namespace Controller
 {
     public class Localizer
     {
-        NamedPipeClientStream pipeClient;
-        StreamString streamPipe;
         LocalizerPackage package;
 
         public Localizer(string name)
         {
-            pipeClient =
-                new NamedPipeClientStream(".", "StronicsLocalizer",
-                    PipeDirection.InOut, PipeOptions.None,
-                    TokenImpersonationLevel.Impersonation);
-
-            Logger.WriteLine("Connecting to server...\n");
-            pipeClient.Connect();
-
-            streamPipe = new StreamString(pipeClient);
-
             package = new LocalizerPackage();
             package.targets = new List<Target>();
 
@@ -39,11 +27,6 @@ namespace Controller
             }
 
             package.name = name;
-        }
-
-        ~Localizer()
-        {
-            pipeClient.Close();
         }
 
         public void UpdateTarget(RSSIInfo info)
@@ -60,11 +43,27 @@ namespace Controller
 
         public Point3D Calculate()
         {
+            NamedPipeClientStream pipeClient;
+            StreamString streamPipe;
+
+            pipeClient =
+                new NamedPipeClientStream(".", "StronicsLocalizer",
+                    PipeDirection.InOut, PipeOptions.None,
+                    TokenImpersonationLevel.Impersonation);
+
+            Logger.WriteLine("Connecting to server...\n");
+            pipeClient.Connect();
+
+            streamPipe = new StreamString(pipeClient);
+
             // {"name":"test", "targets":[{"name":"1","location":[1,2,3],"rssi":15},{}]}
             string strPackage = JsonConvert.SerializeObject(package);
             streamPipe.WriteString(strPackage);
-            string data = streamPipe.ReadString();
             // {"location":[1, 2, 3]}
+            string data = streamPipe.ReadString();
+
+            pipeClient.Close();
+
             Location loc = (Location)JsonConvert.DeserializeObject(data, typeof(Location));
             return new Point3D(loc.location[0], loc.location[1], loc.location[2]);
         }
