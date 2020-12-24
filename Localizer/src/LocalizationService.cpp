@@ -63,6 +63,7 @@ void LocalizationService::serviceThreadLoop()
 						Value& locationJson = targetJson["location"];
 						Target target(targetJson["name"].GetString(), Point(locationJson[0].GetDouble()
 							, locationJson[0].GetDouble(), locationJson[0].GetDouble()));
+						target.SetRssi(targetJson["rssi"].GetDouble());
 						localizer.AddTarget(target);
 					}
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,14 @@ namespace Controller
         public static UDPServer udpServer;
         Dictionary<string, Node> nodes;
 
+        private static Targets targets_;
+
+        public static Targets targets
+        {
+            get { return targets_; }
+        }
+
+
         public FormMain()
         {
             InitializeComponent();
@@ -24,6 +33,8 @@ namespace Controller
 
         private void FormMain_Load(object sender, EventArgs e)
         {
+            targets_ = (Targets)JsonConvert.DeserializeObject(File.ReadAllText("predefinedLocations.json"), typeof(Targets));
+
             nodes = new Dictionary<string, Node>();
             udpServer = new UDPServer();
             udpServer.Start(2828);

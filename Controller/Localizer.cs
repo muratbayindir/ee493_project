@@ -1,12 +1,14 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Media3D;
 
 namespace Controller
 {
@@ -14,8 +16,9 @@ namespace Controller
     {
         NamedPipeClientStream pipeClient;
         StreamString streamPipe;
+        LocalizerPackage package;
 
-        public Localizer()
+        public Localizer(string name)
         {
             pipeClient =
                 new NamedPipeClientStream(".", "StronicsLocalizer",
@@ -26,6 +29,16 @@ namespace Controller
             pipeClient.Connect();
 
             streamPipe = new StreamString(pipeClient);
+
+            package = new LocalizerPackage();
+            package.targets = new List<Target>();
+
+            foreach (Target target in FormMain.targets.targets)
+            {
+                package.targets.Add(target);
+            }
+
+            package.name = name;
         }
 
         ~Localizer()
@@ -33,12 +46,27 @@ namespace Controller
             pipeClient.Close();
         }
 
-        public string UpdateTargets(LocalizerPackage package)
+        public void UpdateTarget(RSSIInfo info)
+        {
+            for (int i = 0; i < package.targets.Count; ++i)
+            {
+                if (info.targetName.Equals(package.targets[i].name))
+                {
+                    package.targets[i].rssi = info.rssiValue;
+                    return;
+                }
+            }
+        }
+
+        public Point3D Calculate()
         {
             // {"name":"test", "targets":[{"name":"1","location":[1,2,3],"rssi":15},{}]}
             string strPackage = JsonConvert.SerializeObject(package);
             streamPipe.WriteString(strPackage);
-            return streamPipe.ReadString();
+            string data = streamPipe.ReadString();
+            // {"location":[1, 2, 3]}
+            Location loc = (Location)JsonConvert.DeserializeObject(data, typeof(Location));
+            return new Point3D(loc.location[0], loc.location[1], loc.location[2]);
         }
     }
 
@@ -53,7 +81,17 @@ namespace Controller
         public string name { get; set; }
         public List<double> location { get; set; }
         public double rssi { get; set; }
-    }    
+    }  
+
+    public class Targets
+    {
+        public List<Target> targets { get; set; }
+    }
+
+    public class Location
+    {
+        public List<double> location { get; set; }
+    }
 
     // Defines the data protocol for reading and writing strings on our stream.
     public class StreamString
@@ -70,10 +108,10 @@ namespace Controller
         public string ReadString()
         {
             int len = 0;
-            len += ioStream.ReadByte() >> 0;
-            len += ioStream.ReadByte() >> 8;
-            len += ioStream.ReadByte() >> 16;
-            len += ioStream.ReadByte() >> 24;
+            len += ioStream.ReadByte() << 0;
+            len += ioStream.ReadByte() << 8;
+            len += ioStream.ReadByte() << 16;
+            len += ioStream.ReadByte() << 24;
             var inBuffer = new byte[len];
             ioStream.Read(inBuffer, 0, len);
 

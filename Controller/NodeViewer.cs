@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ZedGraph;
+using System.Windows.Media.Media3D;
 
 namespace Controller
 {
@@ -21,7 +22,7 @@ namespace Controller
         {
             InitializeComponent();
 
-            localizer = new Localizer();
+            localizer = new Localizer(node.Name);
 
             node.OnUpdate += new Node.NodeUpdatedEventHandler(onNodeUpdate);
         }
@@ -32,18 +33,16 @@ namespace Controller
 
         void onNodeUpdate(Node node, RSSIInfo info)
         {
-            LocalizerPackage package = new LocalizerPackage();
-            package.name = "test";
-            package.targets = new List<Target>();
-            Target target = new Target();
-            target.location = new List<double>();
-            target.location.Add(0.0);
-            target.location.Add(1.0);
-            target.location.Add(2.0);
-            target.name = info.targetName;
-            target.rssi = info.rssiValue;
-            package.targets.Add(target);
-            string result = localizer.UpdateTargets(package);
+            localizer.UpdateTarget(info);
+
+            //Target target = new Target();
+            //target.location = new List<double>();
+            //target.location.Add(0.0);
+            //target.location.Add(1.0);
+            //target.location.Add(2.0);
+            //target.name = info.targetName;
+            //target.rssi = info.rssiValue;
+            //localizer.UpdateTarget(target);
 
             //if(info.targetName == "SUPERONLINE_WiFi_4766")
             //{
@@ -56,7 +55,6 @@ namespace Controller
             this.Invoke(new Action(() => {
                 this.toolTip1.SetToolTip(lblNodeName, tipText);
                 lblNodeName.Text = node.Name;
-                lblResult.Text = result;
 
                 if (showRssi)
                 {
@@ -71,6 +69,12 @@ namespace Controller
             rssiViewer = new FormRssiViewer();
             showRssi = true;
             rssiViewer.Show();
+        }
+
+        private void btnCalc_Click(object sender, EventArgs e)
+        {
+            Point3D loc = localizer.Calculate();
+            lblLocation.Text = "(" + loc.X + "," + loc.Y + "," + loc.Z + ")";
         }
     }
 }
