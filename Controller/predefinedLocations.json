@@ -1,0 +1,24 @@
+{
+  "targets": [
+    {
+      "name": "esp1",
+      "location": [ 0, 0, 0 ],
+      "rssi": -100
+    },
+    {
+      "name": "esp2",
+      "location": [ 0, 3, 0 ],
+      "rssi": -100
+    },
+    {
+      "name": "esp3",
+      "location": [ 3, 0, 0 ],
+      "rssi": -100
+    },
+    {
+      "name": "SUPERONLINE_WiFi_4766",
+      "location": [ 1, 2, 3 ],
+      "rssi": -100
+    }
+  ]
+}
