@@ -33,7 +33,6 @@
             this.lblNodeName = new System.Windows.Forms.Label();
             this.btnShowRssi = new System.Windows.Forms.Button();
             this.lblLocation = new System.Windows.Forms.Label();
-            this.btnCalc = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // toolTip1
@@ -69,22 +68,11 @@
             this.lblLocation.Size = new System.Drawing.Size(0, 13);
             this.lblLocation.TabIndex = 2;
             // 
-            // btnCalc
-            // 
-            this.btnCalc.Location = new System.Drawing.Point(234, 1);
-            this.btnCalc.Name = "btnCalc";
-            this.btnCalc.Size = new System.Drawing.Size(41, 23);
-            this.btnCalc.TabIndex = 3;
-            this.btnCalc.Text = "Calc";
-            this.btnCalc.UseVisualStyleBackColor = true;
-            this.btnCalc.Click += new System.EventHandler(this.btnCalc_Click);
-            // 
             // NodeViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.Controls.Add(this.btnCalc);
             this.Controls.Add(this.lblLocation);
             this.Controls.Add(this.btnShowRssi);
             this.Controls.Add(this.lblNodeName);
@@ -102,6 +90,5 @@
         private System.Windows.Forms.Label lblNodeName;
         private System.Windows.Forms.Button btnShowRssi;
         private System.Windows.Forms.Label lblLocation;
-        private System.Windows.Forms.Button btnCalc;
     }
 }

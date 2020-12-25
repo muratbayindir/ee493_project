@@ -20,9 +20,9 @@ namespace Controller
 
         private static Targets targets_;
 
-        public static Targets targets
+        public static List<Target> PredefinedTargets
         {
-            get { return targets_; }
+            get { return targets_.targets; }
         }
 
 
