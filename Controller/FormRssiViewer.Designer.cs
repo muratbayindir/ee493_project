@@ -33,10 +33,13 @@
             this.zedGraphControl1 = new ZedGraph.ZedGraphControl();
             this.label1 = new System.Windows.Forms.Label();
             this.lblNode = new System.Windows.Forms.Label();
+            this.cmbType = new System.Windows.Forms.ComboBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // cmbTargets
             // 
+            this.cmbTargets.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbTargets.FormattingEnabled = true;
             this.cmbTargets.Location = new System.Drawing.Point(329, 9);
             this.cmbTargets.Name = "cmbTargets";
@@ -80,11 +83,35 @@
             this.lblNode.TabIndex = 5;
             this.lblNode.Text = "NOT INITIALISED";
             // 
+            // cmbType
+            // 
+            this.cmbType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbType.FormattingEnabled = true;
+            this.cmbType.Items.AddRange(new object[] {
+            "Rssi (dbm)",
+            "Distance (m)"});
+            this.cmbType.Location = new System.Drawing.Point(667, 9);
+            this.cmbType.Name = "cmbType";
+            this.cmbType.Size = new System.Drawing.Size(121, 21);
+            this.cmbType.TabIndex = 6;
+            this.cmbType.SelectedIndexChanged += new System.EventHandler(this.cmbType_SelectedIndexChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(609, 11);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(31, 13);
+            this.label2.TabIndex = 7;
+            this.label2.Text = "Type";
+            // 
             // FormRssiViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.cmbType);
             this.Controls.Add(this.lblNode);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.cmbTargets);
@@ -103,5 +130,7 @@
         private ZedGraph.ZedGraphControl zedGraphControl1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label lblNode;
+        private System.Windows.Forms.ComboBox cmbType;
+        private System.Windows.Forms.Label label2;
     }
 }

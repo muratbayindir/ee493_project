@@ -31,8 +31,12 @@
             this.components = new System.ComponentModel.Container();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.lblNodeName = new System.Windows.Forms.Label();
-            this.btnShowRssi = new System.Windows.Forms.Button();
+            this.btnInspect = new System.Windows.Forms.Button();
             this.lblLocation = new System.Windows.Forms.Label();
+            this.pctObject = new System.Windows.Forms.PictureBox();
+            this.pctBackground = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pctObject)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pctBackground)).BeginInit();
             this.SuspendLayout();
             // 
             // toolTip1
@@ -50,15 +54,15 @@
             this.lblNodeName.TabIndex = 0;
             this.lblNodeName.Text = "Node";
             // 
-            // btnShowRssi
+            // btnInspect
             // 
-            this.btnShowRssi.Location = new System.Drawing.Point(281, 1);
-            this.btnShowRssi.Name = "btnShowRssi";
-            this.btnShowRssi.Size = new System.Drawing.Size(41, 23);
-            this.btnShowRssi.TabIndex = 1;
-            this.btnShowRssi.Text = "Rssi";
-            this.btnShowRssi.UseVisualStyleBackColor = true;
-            this.btnShowRssi.Click += new System.EventHandler(this.btnShowRssi_Click);
+            this.btnInspect.Location = new System.Drawing.Point(214, 1);
+            this.btnInspect.Name = "btnInspect";
+            this.btnInspect.Size = new System.Drawing.Size(55, 23);
+            this.btnInspect.TabIndex = 1;
+            this.btnInspect.Text = "Inspect";
+            this.btnInspect.UseVisualStyleBackColor = true;
+            this.btnInspect.Click += new System.EventHandler(this.btnShowRssi_Click);
             // 
             // lblLocation
             // 
@@ -68,17 +72,39 @@
             this.lblLocation.Size = new System.Drawing.Size(0, 13);
             this.lblLocation.TabIndex = 2;
             // 
+            // pctObject
+            // 
+            this.pctObject.Location = new System.Drawing.Point(7, 39);
+            this.pctObject.Name = "pctObject";
+            this.pctObject.Size = new System.Drawing.Size(30, 30);
+            this.pctObject.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pctObject.TabIndex = 3;
+            this.pctObject.TabStop = false;
+            // 
+            // pctBackground
+            // 
+            this.pctBackground.Location = new System.Drawing.Point(150, 85);
+            this.pctBackground.Name = "pctBackground";
+            this.pctBackground.Size = new System.Drawing.Size(30, 30);
+            this.pctBackground.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pctBackground.TabIndex = 4;
+            this.pctBackground.TabStop = false;
+            // 
             // NodeViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Controls.Add(this.pctObject);
             this.Controls.Add(this.lblLocation);
-            this.Controls.Add(this.btnShowRssi);
+            this.Controls.Add(this.btnInspect);
             this.Controls.Add(this.lblNodeName);
+            this.Controls.Add(this.pctBackground);
             this.Name = "NodeViewer";
-            this.Size = new System.Drawing.Size(330, 25);
+            this.Size = new System.Drawing.Size(274, 250);
             this.Load += new System.EventHandler(this.NodeViewer_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.pctObject)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pctBackground)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -88,7 +114,9 @@
 
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Label lblNodeName;
-        private System.Windows.Forms.Button btnShowRssi;
+        private System.Windows.Forms.Button btnInspect;
         private System.Windows.Forms.Label lblLocation;
+        private System.Windows.Forms.PictureBox pctObject;
+        private System.Windows.Forms.PictureBox pctBackground;
     }
 }

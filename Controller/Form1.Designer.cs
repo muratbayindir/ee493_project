@@ -34,9 +34,13 @@
             // 
             // flpDevices
             // 
+            this.flpDevices.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.flpDevices.AutoScroll = true;
             this.flpDevices.Location = new System.Drawing.Point(13, 38);
             this.flpDevices.Name = "flpDevices";
-            this.flpDevices.Size = new System.Drawing.Size(334, 212);
+            this.flpDevices.Size = new System.Drawing.Size(445, 386);
             this.flpDevices.TabIndex = 0;
             // 
             // label1
@@ -52,7 +56,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(496, 262);
+            this.ClientSize = new System.Drawing.Size(470, 436);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.flpDevices);
             this.Name = "FormMain";

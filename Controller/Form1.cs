@@ -17,6 +17,7 @@ namespace Controller
     {
         public static UDPServer udpServer;
         Dictionary<string, Node> nodes;
+        Dictionary<string, NodeViewer> nodeViewers;
 
         private static Targets targets_;
 
@@ -36,6 +37,8 @@ namespace Controller
             targets_ = (Targets)JsonConvert.DeserializeObject(File.ReadAllText("predefinedLocations.json"), typeof(Targets));
 
             nodes = new Dictionary<string, Node>();
+            nodeViewers = new Dictionary<string, NodeViewer>();
+
             udpServer = new UDPServer();
             udpServer.Start(2828);
             udpServer.onDataReceived += Server_onDataReceived;
@@ -71,9 +74,9 @@ Info : 192.168.1.22:50075 : {
                     {
                         Node node = new Node(root.device_id.Value);
                         nodes.Add(root.device_id.Value, node);
-                        NodeViewer nodeViewer = new NodeViewer(node);
+                        nodeViewers.Add(node.Name, new NodeViewer(node));
                         this.Invoke(new Action(() => {
-                            flpDevices.Controls.Add(nodeViewer);
+                            flpDevices.Controls.Add(nodeViewers[node.Name]);
                         }));
                     }
 

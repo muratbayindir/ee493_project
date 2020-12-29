@@ -1,7 +1,8 @@
 #include "main.h"
 
-// #define ENABLE_LONG_RANGE
 #define ENABLE_SCAN
+#define ENABLE_CONNECT
+#define ENABLE_LONG_RANGE
 // #define SHOW_SINGLE_AP
 
 extern update_data_t client_data;
@@ -36,10 +37,15 @@ void wifi_task(void)
     };
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config));
-    ESP_ERROR_CHECK(esp_wifi_set_protocol(ESP_IF_WIFI_STA, WIFI_PROTOCOL_11B | WIFI_PROTOCOL_11G | WIFI_PROTOCOL_11N));
+#ifdef ENABLE_LONG_RANGE
+        ESP_ERROR_CHECK(esp_wifi_set_protocol(ESP_IF_WIFI_STA, WIFI_PROTOCOL_LR));
+#endif
     ESP_ERROR_CHECK(esp_wifi_start());
+#ifdef ENABLE_CONNECT
+    ESP_ERROR_CHECK(esp_wifi_set_protocol(ESP_IF_WIFI_STA, WIFI_PROTOCOL_11B | WIFI_PROTOCOL_11G | WIFI_PROTOCOL_11N));
     ESP_ERROR_CHECK(esp_wifi_connect());
-    
+#endif /* ENABLE_CONNECT */
+
     struct sockaddr_in dest_addr;
     dest_addr.sin_addr.s_addr = inet_addr(SERVER_ADDRESS);
     dest_addr.sin_family = AF_INET;
@@ -58,9 +64,13 @@ void wifi_task(void)
     while (true)
     {
 #ifdef ENABLE_SCAN
+#ifdef ENABLE_CONNECT
         ESP_ERROR_CHECK(esp_wifi_disconnect());
+#endif /* ENABLE_CONNECT */
 #ifdef ENABLE_LONG_RANGE
+#ifdef ENABLE_CONNECT
         ESP_ERROR_CHECK(esp_wifi_set_protocol(ESP_IF_WIFI_STA, WIFI_PROTOCOL_LR));
+#endif /* ENABLE_CONNECT */
 #endif
         ESP_ERROR_CHECK(esp_wifi_scan_start(NULL, true));
         ESP_ERROR_CHECK(esp_wifi_scan_get_ap_records(&number, ap_info));
@@ -100,13 +110,18 @@ void wifi_task(void)
 
 #ifdef ENABLE_SCAN
 #ifdef ENABLE_LONG_RANGE
+#ifdef ENABLE_CONNECT
         ESP_ERROR_CHECK(esp_wifi_set_protocol(ESP_IF_WIFI_STA, WIFI_PROTOCOL_11B | WIFI_PROTOCOL_11G | WIFI_PROTOCOL_11N));
+#endif /* ENABLE_CONNECT */
 #endif
+#ifdef ENABLE_CONNECT
         ESP_ERROR_CHECK(esp_wifi_connect());
+#endif /* ENABLE_CONNECT */
 #endif
+
+#ifdef ENABLE_CONNECT
 
         payload = build_payload();
-
         while (1)
         {
             if (payload != NULL)
@@ -127,6 +142,7 @@ void wifi_task(void)
 
             vTaskDelay(25 / portTICK_PERIOD_MS);
         }
+#endif /* ENABLE_CONNECT */
 
         vTaskDelay(100 / portTICK_PERIOD_MS);
     }

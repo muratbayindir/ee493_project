@@ -16,7 +16,7 @@ namespace Controller
 
         public Point3D Location { get { return location; } }
 
-        public delegate void NodeUpdatedEventHandler(Node node, RSSIInfo info);
+        public delegate void NodeUpdatedEventHandler(Node node, RSSIInfo info, double distance);
         public event NodeUpdatedEventHandler OnUpdate;
 
         public delegate void TargetAddedEventHandler(Node node, string targetName);
@@ -74,7 +74,15 @@ namespace Controller
                 OnLocationUpdated?.Invoke(this, UpdateLocation());
             }
 
-            OnUpdate?.Invoke(this, info);
+            if(modems.ContainsKey(info.targetName))
+            {
+                OnUpdate?.Invoke(this, info, RssiToMeter(info.targetName, info.rssiValue));
+            }
+            else
+            {
+                OnUpdate?.Invoke(this, info, RssiToMeter(info.rssiValue));
+            }
+
         }
 
         public RSSIInfo GetLastRssiInfo()
@@ -110,7 +118,7 @@ namespace Controller
 
         private double RssiToMeter(double rssi)
         {
-            return Math.Pow(10, (-69 - (rssi)) / (10 * 2));
+            return Math.Pow(10, (-30 - (rssi)) / (10 * 2));
         }
 
         private double RssiToMeter(string targetName, double rssi)
@@ -130,16 +138,16 @@ namespace Controller
 
         private Point3D UpdateLocation()
         {
-            double z1 = RssiToMeter(modems["SUPERONLINE_WiFi_4766"].rssi);
-            double z2 = RssiToMeter(modems["esp2"].rssi);
-            double z3 = RssiToMeter(modems["esp3"].rssi);
+            double z1 = RssiToMeter("esp1", modems["esp1"].rssi);
+            double z2 = RssiToMeter("esp1", modems["esp2"].rssi);
+            double z3 = RssiToMeter("esp1", modems["esp3"].rssi);
 
             z1 = z1 * z1;
             z2 = z2 * z2;
             z3 = z3 * z3;
 
-            location.X = (z1 - z2 + 9) / 6; //for 1 meter square area 6->2, 9->1
-            location.Y = (z1 - z3 + 9) / 6; //for 1 meter square area 6->2, 9->1
+            location.X = (z1 - z2 + 1) / 2; //for 1 meter square area 6->2, 9->1
+            location.Y = (z1 - z3 + 1) / 2; //for 1 meter square area 6->2, 9->1
             location.Z = 0;
 
             return location;

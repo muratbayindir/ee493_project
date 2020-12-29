@@ -68,7 +68,6 @@
     <Compile Include="FormRssiViewer.Designer.cs">
       <DependentUpon>FormRssiViewer.cs</DependentUpon>
     </Compile>
-    <Compile Include="Localizer.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="NodeViewer.cs">
@@ -97,6 +96,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="packages.config" />
     <None Include="predefinedLocations.json">
@@ -117,6 +117,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="License-LGPL.txt" />
+    <None Include="Resources\refresh.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

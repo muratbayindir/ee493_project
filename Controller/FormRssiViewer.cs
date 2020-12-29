@@ -18,6 +18,7 @@ namespace Controller
         const int maxSize = 300;
         string targetName;
         bool isNodeSet;
+        bool dataType;
 
         public FormRssiViewer()
         {
@@ -43,7 +44,7 @@ namespace Controller
             }
 
             PointPairList pointPairs = new PointPairList(x, y);
-            LineItem lineItem = zedGraphControl1.GraphPane.AddCurve("RSSI", pointPairs, Color.Red);
+            LineItem lineItem = zedGraphControl1.GraphPane.AddCurve(node.Name, pointPairs, Color.Red);
             lineItem.Line.Width = 3.0f;
 
             zedGraphControl1.GraphPane.Title.Text = "Rssi vs Time";
@@ -66,9 +67,11 @@ namespace Controller
                 node.OnTargetAdded -= Node_onTargetAdded;
                 node.OnTargetRemoved -= Node_onTargetRemoved;
             });
+
+            cmbType.SelectedIndex = 0;
         }
 
-        private void Node_onUpdate(Node node, RSSIInfo info)
+        private void Node_onUpdate(Node node, RSSIInfo info, double distance)
         {
             if(info.targetName == this.targetName)
             {
@@ -77,7 +80,7 @@ namespace Controller
                     y[i] = y[i + 1];
                 }
 
-                y[maxSize - 1] = info.rssiValue;
+                y[maxSize - 1] = dataType ? info.rssiValue : distance;
 
                 this.Invoke(new Action(() => {
                     PointPairList pointPairs = new PointPairList(x, y);
@@ -112,6 +115,15 @@ namespace Controller
         private void cmbTargets_SelectedIndexChanged(object sender, EventArgs e)
         {
             targetName = cmbTargets.Text;
+        }
+
+        private void cmbType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            dataType = cmbType.SelectedIndex == 0;
+
+            zedGraphControl1.GraphPane.Title.Text = dataType ? "Rssi vs Time" : "Distance vs Time";
+            zedGraphControl1.GraphPane.XAxis.Title.Text = "Time";
+            zedGraphControl1.GraphPane.YAxis.Title.Text = dataType ? "Rssi" : "Distance";
         }
     }
 }
