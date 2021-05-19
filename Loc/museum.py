@@ -1,27 +1,14 @@
 import cv2
 from collections import deque
 import numpy as np
-black = np.array([[180, 255, 30], [0, 0, 0]])
-white = np.array([[180, 18, 255], [0, 0, 231]])
-red1 = np.array([[180, 255, 255], [159, 50, 70]])
-red2 = np.array([[9, 255, 255], [0, 50, 70]])
-green = np.array([[89, 255, 255], [36, 50, 70]])
-blue = np.array([[128, 255, 255], [90, 50, 70]])
-yellow = np.array([[35, 255, 255], [25, 50, 70]])
-purple = np.array([[158, 255, 255], [129, 50, 70]])
-orange = np.array([[24, 255, 255], [10, 50, 70]])
-gray = np.array([[180, 18, 230], [0, 0, 40]])
 
-color_dict_HSV = {'black': black,
-                  'white': white,
-                  'red1': red1,
-                  'red2': red2,
-                  'green': green,
-                  'blue': blue,
-                  'yellow': yellow,
-                  'purple': purple,
-                  'orange': orange,
-                  'gray': gray}
+colorNone = np.array([[0, 0, 0], [0, 0, 0]])
+color1 = np.array([[180, 255, 30], [0, 0, 0]])
+color2 = np.array([[180, 18, 255], [0, 0, 231]])
+
+color_dict_HSV = {'None': colorNone,
+                  'color1': color1,
+                  'color2': color2}
 
 
 class Visitor:
@@ -31,7 +18,7 @@ class Visitor:
                  sections=None,
                  visit_map=None):
         if name is None:
-            name = 'Ghost'
+            name = 'None'
         if color is None:
             color = [[35, 255, 255], [25, 50, 70]]  # default color is yellow.
         if sections is None:

@@ -3,6 +3,8 @@
 #include "WiFi.h"
 #include "Audio.h"
 
+#define ESP_TAG "esp1"
+
 String ssid = "BINBIRNET_EMIN";
 String password = "eminmerve1223";
 
@@ -39,7 +41,8 @@ void loop()
 		// Check WiFi connection status
 		if (WiFi.status() == WL_CONNECTED)
 		{
-			cmd = httpGETRequest(serverName.c_str());
+			String reqUrl = serverName + ESP_TAG;
+			cmd = httpGETRequest(reqUrl.c_str());
 
 			if (cmd != lastCmd)
 			{
@@ -57,6 +60,7 @@ void loop()
 		}
 	}
 }
+
 String httpGETRequest(const char *serverName)
 {
 	HTTPClient http;
@@ -80,6 +84,7 @@ String httpGETRequest(const char *serverName)
 		Serial.print("Error code: ");
 		Serial.println(httpResponseCode);
 	}
+	
 	// Free resources
 	http.end();
 	return payload;
