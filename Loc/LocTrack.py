@@ -31,12 +31,12 @@ def track_everybody():
             
         hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # Blue, Green, Red -> HSV coding
         img, x_of_1, y_of_1 = visitor1.is_getting_tracked(img, hsv, 10, 20)
-        img, x_of_2, y_of_2 = visitor2.is_getting_tracked(img, hsv, 10, 40)
+        # img, x_of_2, y_of_2 = visitor2.is_getting_tracked(img, hsv, 10, 40)
 
-        if x_of_1 < 100 and y_of_1 < 100:
-            esp1 = "item1"
+        if x_of_1 < 200 and y_of_1 < 200:
+            esp1 = "item3.m4a"
         else:
-            esp1 = "none"
+            esp1 = "item2.m4a"
 
         if esp1 != lastEsp1:
 

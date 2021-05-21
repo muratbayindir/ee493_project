@@ -3,7 +3,8 @@ from collections import deque
 import numpy as np
 
 colorNone = np.array([[0, 0, 0], [0, 0, 0]])
-color1 = np.array([[180, 255, 30], [0, 0, 0]])
+# color1 = np.array([[180, 255, 30], [0, 0, 0]])
+color1 = np.array([[27, 197, 255], [21, 107, 140]])
 color2 = np.array([[180, 18, 255], [0, 0, 231]])
 
 color_dict_HSV = {'None': colorNone,
