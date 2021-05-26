@@ -79,3 +79,13 @@ class Visitor:
             frame = cv2.line(frame, pts[i - 1], pts[i], (0, 0, 225), thick)
 
         return frame, x, y
+class Items:
+    def __init__(self,
+                 x=None,
+                 y=None):
+        if x is None:
+            x = 0
+        if y is None:
+            y = 0
+        self.x = x  # in cms
+        self.y = y  # in cms
