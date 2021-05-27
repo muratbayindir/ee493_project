@@ -36,13 +36,13 @@ def choose_recordings(x, y, height, width, item1, item2, item3):
 
 
 ###########################################
-total_x = 300  # this value must be changed
-total_y = 300  # this value must be changed
+total_x = 280  # this value must be changed
+total_y = 210  # this value must be changed
 ###########################################
 
-item1 = museum.Items(40, 40)  # this values must be changed
-item2 = museum.Items(150, 150)  # this values must be changed
-item3 = museum.Items(0, 250)  # this values must be changed
+item1 = museum.Items(20, 180)  # this values must be changed
+item2 = museum.Items(250, 180)  # this values must be changed
+item3 = museum.Items(130, 20)  # this values must be changed
 
 
 def draw_circles_for_items(frame, item1, item2, item3):
