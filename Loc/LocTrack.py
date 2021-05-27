@@ -22,7 +22,7 @@ def draw_circles_for_items(frame, item1, item2, item3):
     pass
 
 # murat burayi duzenle!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-def choose_recordings(x, y, height, width, item1, item2, item3):
+def choose_recordings(x, y, height, width, item1, item2, item3, door):
     close_to_this = 0
     if item_vs_visitors(item1, pixels_to_cms(x, height, total_x), pixels_to_cms(y, width, total_y)): # is it close to item1
         close_to_this = 1  # esp1 = "item1.m4a"
@@ -30,6 +30,8 @@ def choose_recordings(x, y, height, width, item1, item2, item3):
         close_to_this = 2  # esp1 = "item2.m4a"
     elif item_vs_visitors(item3, pixels_to_cms(x, height, total_x), pixels_to_cms(y, width, total_y)): # is it close to item3
         close_to_this = 3  # esp1 = "item3.m4a"
+    elif item_vs_visitors(item3, pixels_to_cms(x, height, total_x), pixels_to_cms(y, width, total_y)):
+        close_to_this = 4 # visitor at the door; play 'you are not allowed'.
     else:
         close_to_this = 0  # esp1 = "item2.m4a"  # no record will be played!!!!!!!!!!! it is not close to any item
     return close_to_this
@@ -43,7 +45,7 @@ total_y = 210  # this value must be changed
 item1 = museum.Items(20, 180)  # this values must be changed
 item2 = museum.Items(250, 180)  # this values must be changed
 item3 = museum.Items(130, 20)  # this values must be changed
-
+door = museum.Items(0,0) #tam kosede
 
 def draw_circles_for_items(frame, item1, item2, item3):
     pass
@@ -92,14 +94,16 @@ def track_everybody():
                                         width=width,
                                         item1=item1,
                                         item2=item2,
-                                        item3=item3)
+                                        item3=item3,
+                                        door=door)
 
         v2_close_to = choose_recordings(x_of_2, y_of_2,
                                         height=height,
                                         width=width,
                                         item1=item1,
                                         item2=item2,
-                                        item3=item3)
+                                        item3=item3,
+                                        door=door)
         
         frame = cv2.putText(img,
                           'Visitor 1 close to: '+str(v1_close_to),
