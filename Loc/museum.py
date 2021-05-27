@@ -4,7 +4,8 @@ import numpy as np
 
 colorNone = np.array([[0, 0, 0], [0, 0, 0]])
 # color1 = np.array([[180, 255, 30], [0, 0, 0]])
-color1 = np.array([[27, 197, 255], [21, 107, 140]])
+# color1 = np.array([[27, 197, 255], [21, 107, 140]])
+color1 = np.array([[33, 184, 255], [26, 126, 145]])
 color2 = np.array([[180, 18, 255], [0, 0, 231]])
 
 color_dict_HSV = {'None': colorNone,
@@ -41,13 +42,21 @@ class Visitor:
         x = -1
         y = -1
         pts = deque(maxlen=50)
-        krnl = np.ones((5, 5), np.uint8)  # burada yapıyor
+        krnl = np.ones((4, 4), np.uint8)  # burada yapıyor
         # masking
         mask = cv2.inRange(hsv, self.color[1], self.color[0])
         # dilation and erode
-        mask = cv2.erode(mask, krnl, iterations=2)  # burada yapıyor
+        mask = cv2.erode(mask, krnl, iterations=1)  # burada yapıyor
         mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, krnl)  # burada yapıyor
-        mask = cv2.dilate(mask, krnl, iterations=1)    # burada yapıyor
+
+        # orig        
+        # krnl = np.ones((5, 5), np.uint8)  # burada yapıyor
+        # # masking
+        # mask = cv2.inRange(hsv, self.color[1], self.color[0])
+        # # dilation and erode
+        # mask = cv2.erode(mask, krnl, iterations=2)  # burada yapıyor
+        # mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, krnl)  # burada yapıyor
+        # mask = cv2.dilate(mask, krnl, iterations=1)    # burada yapıyor
 
         # finding contours
         count, heir = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2:]
@@ -66,7 +75,7 @@ class Visitor:
                 text = "Location(in pixel) of " + str(self.name) + " -> x: " + str(int(x)) + " y: " + str(int(y))
                 frame = cv2.circle(frame, (int(x), int(y)), int(radius), (0, 255, 255), 2)
                 frame = cv2.circle(frame, center, 5, (0, 0, 255), -1)
-                frame = cv2.putText(frame, text, (pixel_x, pixel_y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (34, 200, 34), 2)
+                # frame = cv2.putText(frame, text, (pixel_x, pixel_y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (34, 200, 34), 2)
 
         # appending centers
         pts.appendleft(center)
