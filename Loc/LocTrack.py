@@ -114,7 +114,10 @@ def track_everybody():
                           (10, 40),
                           cv2.FONT_HERSHEY_SIMPLEX, 0.5, (34, 200, 34), 2)
 
-        esp1 = "item" + str(v1_close_to) + ".m4a"
+        if v1_close_to == 4:
+            esp1 = "notAllowed.aac"
+        else:
+            esp1 = "item" + str(v1_close_to) + ".m4a"
 
         if esp1 != lastEsp1:
 
@@ -124,7 +127,10 @@ def track_everybody():
             
             lastEsp1 = esp1
 
-        esp2 = "item" + str(v2_close_to) + ".m4a"
+        if v2_close_to == 4:
+            esp2 = "notAllowed.aac"
+        else:
+            esp2 = "item" + str(v2_close_to) + ".m4a"
 
         if esp2 != lastEsp2:
 
