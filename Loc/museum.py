@@ -13,6 +13,15 @@ color_dict_HSV = {'None': colorNone,
                   'color2': color2}
 
 
+###########################################
+total_x = 280  # this value must be changed
+total_y = 210  # this value must be changed
+###########################################
+
+def pixels_to_cms(current_pixel, all_pixels, total_length):
+    in_cms = (current_pixel/all_pixels) * total_length
+    return in_cms
+
 class Visitor:
     def __init__(self,
                  name=None,
@@ -31,14 +40,14 @@ class Visitor:
         self.color = color
         self.sections = sections
         self.visit_map = visit_map
-
-    def show_visit_map(self):
-        pass
+        self.found = False
+        self.x = 0
+        self.y = 0
 
     def change_color(self, new_color):
         self.color = color_dict_HSV[new_color]
 
-    def is_getting_tracked(self, frame, hsv, pixel_x, pixel_y):
+    def track(self, frame, hsv):
         x = -1
         y = -1
         pts = deque(maxlen=50)
@@ -61,6 +70,7 @@ class Visitor:
         # finding contours
         count, heir = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2:]
         center = None
+        found = False
 
         if len(count) > 0:
             # Get the largest contour and its center
@@ -75,7 +85,12 @@ class Visitor:
                 text = "Location(in pixel) of " + str(self.name) + " -> x: " + str(int(x)) + " y: " + str(int(y))
                 frame = cv2.circle(frame, (int(x), int(y)), int(radius), (0, 255, 255), 2)
                 frame = cv2.circle(frame, center, 5, (0, 0, 255), -1)
-                # frame = cv2.putText(frame, text, (pixel_x, pixel_y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (34, 200, 34), 2)
+                found = True
+
+
+        self.found = found
+        self.x = pixels_to_cms(x, frame.shape[0], total_x)
+        self.y = pixels_to_cms(y, frame.shape[1], total_y)
 
         # appending centers
         pts.appendleft(center)
@@ -87,7 +102,7 @@ class Visitor:
             thick = int(np.sqrt(len(pts) / float(i + 1)) * 2.5)
             frame = cv2.line(frame, pts[i - 1], pts[i], (0, 0, 225), thick)
 
-        return frame, x, y
+        return frame
 class Items:
     def __init__(self,
                  x=None,
