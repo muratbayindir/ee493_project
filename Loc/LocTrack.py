@@ -51,11 +51,7 @@ visitor2 = museum.Visitor('Visitor 2')
 visitor2.change_color('color2')
 
 window = tk.Tk()
-<<<<<<< .mine
 vis1Door1Allow = tk.IntVar()
-=======
-c = tk.Canvas(window, bg="white", width=640, height=480)
->>>>>>> .theirs
 vis1Door2Allow = tk.IntVar()
 vis2Door1Allow = tk.IntVar()
 vis2Door2Allow = tk.IntVar()
@@ -182,17 +178,11 @@ def track_everybody():
                           'Visitor 2 close to: ' + str(v2_close_to),
                           (10, 40),
                           cv2.FONT_HERSHEY_SIMPLEX, 0.5, (34, 200, 34), 2)
-        frame = cv2.putText(img,
-                          'visit1alloweddoor1: '+ str(vis1Door1Allow) + 'visit1alloweddoor2: '+ str(vis1Door2Allow),
-                          (10, 60),
-                          cv2.FONT_HERSHEY_SIMPLEX, 0.5, (34, 200, 34), 2)
 
         if v1_close_to == 4: # door1
             esp1 = "door1.aac" if vis1Door1Allow.get() else "notAllowed.aac"
         elif v1_close_to == 5: # door2
             esp1 = "door2.aac" if vis1Door2Allow.get() else "notAllowed.aac"
-        else:
-                esp1 = "notAllowed.m4a"
         else:
             esp1 = "item" + str(v1_close_to) + ".m4a"
 
@@ -208,8 +198,6 @@ def track_everybody():
             esp1 = "door1.aac" if vis2Door1Allow.get() else "notAllowed.aac"
         elif v2_close_to == 5: # door2
             esp1 = "door2.aac" if vis2Door2Allow.get() else "notAllowed.aac"
-        else:
-                esp2 = "notAllowed.m4a"
         else:
             esp2 = "item" + str(v2_close_to) + ".m4a"
 
