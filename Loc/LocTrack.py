@@ -50,16 +50,16 @@ visitor1.change_color('color1')
 visitor2 = museum.Visitor('Visitor 2')
 visitor2.change_color('color2')
 
-global vis1Door1Allow
-global vis1Door2Allow
-global vis2Door1Allow
-global vis2Door2Allow
-vis1Door1Allow=0
-vis2Door1Allow=0
-vis1Door2Allow=0
-vis2Door2Allow=0
 window = tk.Tk()
+<<<<<<< .mine
+vis1Door1Allow = tk.IntVar()
+=======
 c = tk.Canvas(window, bg="white", width=640, height=480)
+>>>>>>> .theirs
+vis1Door2Allow = tk.IntVar()
+vis2Door1Allow = tk.IntVar()
+vis2Door2Allow = tk.IntVar()
+c = tk.Canvas(window, bg="white", width=total_x, height=total_y)
 lblVis1 = tk.Label(window, bg='white', width=20)
 lblVis2 = tk.Label(window, bg='white', width=20)
 
@@ -106,15 +106,10 @@ def GuiClock():
 
 def GuiStart():
 
-    vis1Door1Allow = tk.IntVar()
-    vis1Door2Allow = tk.IntVar()
-    vis2Door1Allow = tk.IntVar()
-    vis2Door2Allow = tk.IntVar()
-
-    chkVis1Door1Allow = tk.Checkbutton(window, text="Visitor 1 Door 1 Allow", variable=vis1Door1Allow)
-    chkVis1Door2Allow = tk.Checkbutton(window, text="Visitor 1 Door 2 Allow", variable=vis1Door2Allow)
-    chkVis2Door1Allow = tk.Checkbutton(window, text="Visitor 2 Door 1 Allow", variable=vis2Door1Allow)
-    chkVis2Door2Allow = tk.Checkbutton(window, text="Visitor 2 Door 2 Allow", variable=vis2Door2Allow)
+    chkVis1Door1Allow = tk.Checkbutton(window, text="Visitor 1 Door 1 Allow", variable=vis1Door1Allow, onvalue=1, offvalue=0)
+    chkVis1Door2Allow = tk.Checkbutton(window, text="Visitor 1 Door 2 Allow", variable=vis1Door2Allow, onvalue=1, offvalue=0)
+    chkVis2Door1Allow = tk.Checkbutton(window, text="Visitor 2 Door 1 Allow", variable=vis2Door1Allow, onvalue=1, offvalue=0)
+    chkVis2Door2Allow = tk.Checkbutton(window, text="Visitor 2 Door 2 Allow", variable=vis2Door2Allow, onvalue=1, offvalue=0)
 
     lblVis1.pack()
     lblVis2.pack()
@@ -141,6 +136,11 @@ def track_everybody():
 
     global esp1
     global esp2
+
+    global vis1Door1Allow
+    global vis1Door2Allow
+    global vis2Door1Allow
+    global vis2Door2Allow
     
     f = open("files/esp1", "r")
     esp1 = lastEsp1 = f.read()
@@ -188,14 +188,10 @@ def track_everybody():
                           cv2.FONT_HERSHEY_SIMPLEX, 0.5, (34, 200, 34), 2)
 
         if v1_close_to == 4: # door1
-            if vis1Door1Allow:
-                esp1 = "Allowed.m4a"
-            else:
-                esp1 = "notAllowed.m4a"
+            esp1 = "door1.aac" if vis1Door1Allow.get() else "notAllowed.aac"
         elif v1_close_to == 5: # door2
-            if vis1Door2Allow:
-                esp1 = "Allowed.m4a"
-            else:
+            esp1 = "door2.aac" if vis1Door2Allow.get() else "notAllowed.aac"
+        else:
                 esp1 = "notAllowed.m4a"
         else:
             esp1 = "item" + str(v1_close_to) + ".m4a"
@@ -209,14 +205,10 @@ def track_everybody():
             lastEsp1 = esp1
 
         if v2_close_to == 4: # door1
-            if vis2Door1Allow:
-                esp2 = "Allowed.m4a"
-            else:
-                esp2 = "notAllowed.m4a"
+            esp1 = "door1.aac" if vis2Door1Allow.get() else "notAllowed.aac"
         elif v2_close_to == 5: # door2
-            if vis2Door2Allow:
-                esp2 = "Allowed.m4a"
-            else:
+            esp1 = "door2.aac" if vis2Door2Allow.get() else "notAllowed.aac"
+        else:
                 esp2 = "notAllowed.m4a"
         else:
             esp2 = "item" + str(v2_close_to) + ".m4a"
