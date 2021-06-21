@@ -8,6 +8,7 @@ colorNone = np.array([[0, 0, 0], [0, 0, 0]])
 color1 = np.array([[255, 224, 255], [73, 155, 205]])
 color2 = np.array([[55, 255, 255], [0, 25, 226]])
 color3 = np.array([[255, 255, 255], [150, 98, 59]])
+color4 = np.array([[78, 255, 255], [55, 0, 198]])
 
 
 color_dict_HSV = {'None': colorNone,

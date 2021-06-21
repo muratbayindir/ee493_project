@@ -211,12 +211,7 @@ def track_everybody():
             #f.close()
             
             #########################
-            if esp2 != lastEsp2:
-                f = open("files/esp2", "w")
-                f.write("maxOccupancy.m4a")
-                f.close()
-            
-            lastEsp2 = esp2
+           
             ########################
 
         if v1_close_to == 4: # door1
@@ -235,20 +230,20 @@ def track_everybody():
             lastEsp1 = esp1
         
 
-        #if v2_close_to == 4: # door1
-        #    esp1 = "door1.m4a" if vis2Door1Allow.get() else "notAllowed.m4a"
-        #elif v2_close_to == 5: # door2
-        #    esp1 = "door2.m4a" if vis2Door2Allow.get() else "notAllowed.m4a"
-        #else:
-        #    esp2 = "item" + str(v2_close_to) + ".m4a"
+        if v2_close_to == 4: # door1
+            esp2 = "door1.m4a" if vis2Door1Allow.get() else "notAllowed.m4a"
+        elif v2_close_to == 5: # door2
+            esp2 = "door2.m4a" if vis2Door2Allow.get() else "notAllowed.m4a"
+        else:
+            esp2 = "item" + str(v2_close_to) + ".m4a"
 
-        #if esp2 != lastEsp2:
+        if esp2 != lastEsp2:
 
-         #   f = open("files/esp2", "w")
-         #   f.write(esp2)
-          #  f.close()
+            f = open("files/esp2", "w")
+            f.write(esp2)
+            f.close()
             
-          #  lastEsp2 = esp2
+            lastEsp2 = esp2
 
         cv2.imshow("Frame", img)
 
